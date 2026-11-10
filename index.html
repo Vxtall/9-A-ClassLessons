@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ходосівський ліцей 9-А клас</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Montserrat & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        sunset: {
+                            orange: '#ff7e5f',
+                            pink: '#ff5e62',
+                            peach: '#feb47b',
+                            purple: '#6b3074',
+                            deep: '#121324',
+                            dark: '#0a0a12'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Montserrat', 'Inter', sans-serif;
+            background-color: #0a0a12;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Sunset Animated Canvas & Sky Background */
+        .sky-bg {
+            background: linear-gradient(180deg, #090a15 0%, #15102a 35%, #2a1538 65%, #42183b 85%, #220e2e 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        /* Animated Clouds */
+        .cloud-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.25;
+        }
+
+        .cloud-1 {
+            background: radial-gradient(ellipse at center, rgba(255, 126, 95, 0.25) 0%, rgba(0,0,0,0) 70%);
+            animation: moveClouds 60s linear infinite alternate;
+            top: 5%;
+        }
+
+        .cloud-2 {
+            background: radial-gradient(ellipse at center, rgba(107, 48, 116, 0.35) 0%, rgba(0,0,0,0) 65%);
+            animation: moveClouds 85s linear infinite alternate-reverse;
+            top: 25%;
+        }
+
+        .cloud-3 {
+            background: radial-gradient(ellipse at center, rgba(254, 180, 123, 0.2) 0%, rgba(0,0,0,0) 60%);
+            animation: moveClouds 45s linear infinite alternate;
+            top: 50%;
+        }
+
+        @keyframes moveClouds {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-15%) translateY(15px); }
+            100% { transform: translateX(-30%) translateY(-10px); }
+        }
+
+        /* Floating / Breathing animation for hero cloud card */
+        @keyframes floatingCloud {
+            0% {
+                transform: translateY(0px) scale(1);
+                box-shadow: 0 10px 30px -10px rgba(255, 126, 95, 0.2);
+            }
+            50% {
+                transform: translateY(-8px) scale(1.008);
+                box-shadow: 0 20px 45px -5px rgba(255, 94, 98, 0.35);
+            }
+            100% {
+                transform: translateY(0px) scale(1);
+                box-shadow: 0 10px 30px -10px rgba(255, 126, 95, 0.2);
+            }
+        }
+
+        .floating-cloud-card {
+            animation: floatingCloud 6s ease-in-out infinite;
+            background: rgba(26, 22, 48, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(22, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 126, 95, 0.5);
+            box-shadow: 0 15px 35px -5px rgba(255, 126, 95, 0.25),
+                        0 0 15px rgba(255, 94, 98, 0.15);
+        }
+
+        /* Glowing Button Effect */
+        .sunset-btn {
+            background: linear-gradient(135deg, #ff7e5f 0%, #ff5e62 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .sunset-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+            z-index: -1;
+        }
+
+        .sunset-btn:hover::before {
+            left: 100%;
+        }
+
+        .sunset-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 126, 95, 0.7),
+                        0 0 35px rgba(255, 94, 98, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Sunset Text Gradient */
+        .sunset-text {
+            background: linear-gradient(135deg, #feb47b 0%, #ff7e5f 50%, #ff5e62 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Entrance Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a1538;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff7e5f;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-100 antialiased selection:bg-sunset-orange selection:text-white">
+
+    <!-- Background Elements -->
+    <div class="sky-bg"></div>
+    <div class="cloud-layer cloud-1"></div>
+    <div class="cloud-layer cloud-2"></div>
+    <div class="cloud-layer cloud-3"></div>
+
+    <!-- Main Wrapper -->
+    <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
+
+        <!-- HEADER SECTION -->
+        <header class="text-center pt-6 pb-8 fade-in-up">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4 text-xs font-semibold tracking-wider text-sunset-peach uppercase">
+                <i class="fa-solid fa-graduation-cap"></i> Навчальний простір
+            </div>
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-3">
+                <span class="sunset-text">Ходосівський ліцей</span>
+            </h1>
+            <p class="text-xl sm:text-2xl font-bold tracking-wide text-slate-200">
+                9-А клас
+            </p>
+        </header>
+
+        <!-- DYNAMIC FLOATING CLOUD HERO CONTAINER -->
+        <section class="mb-12 fade-in-up" style="transition-delay: 150ms;">
+            <div class="floating-cloud-card rounded-3xl p-6 sm:p-8 text-center max-w-3xl mx-auto relative overflow-hidden">
+                <!-- Sun Glow Effect in background -->
+                <div class="absolute -top-12 -left-12 w-32 h-32 bg-sunset-orange/20 rounded-full blur-2xl"></div>
+                <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-sunset-pink/20 rounded-full blur-2xl"></div>
+
+                <div class="relative z-10">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-sunset-orange to-sunset-pink flex items-center justify-center text-2xl shadow-lg shadow-sunset-orange/30">
+                        <i class="fa-solid fa-cloud-sun text-white"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-3 text-white">
+                        Онлайн-кабінет уроків
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto font-inter leading-relaxed">
+                        Обирайте потрібний предмет нижче та швидко приєднуйтесь до Zoom-конференцій у декілька кліків. Усі уроки зібрані в одному зручному місці.
+                    </p>
+
+                    <!-- Quick Filter Search Input -->
+                    <div class="mt-6 max-w-md mx-auto relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="subjectSearch" placeholder="Швидкий пошук предмета..." 
+                               class="w-full bg-slate-900/60 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-sunset-orange focus:ring-1 focus:ring-sunset-orange transition-all backdrop-blur-md">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUBJECT CARDS GRID SECTION -->
+        <main class="fade-in-up" style="transition-delay: 300ms;">
+            <div class="flex items-center justify-between mb-6 px-2">
+                <h3 class="text-lg font-semibold text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-sunset-orange"></i> Предмети та посилання
+                </h3>
+                <span id="subjectCount" class="text-xs font-medium px-3 py-1 rounded-full bg-white/10 text-slate-300">
+                    Всього: 16
+                </span>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="subjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Cards injected dynamically via JS -->
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="noResults" class="hidden text-center py-12">
+                <i class="fa-solid fa-ghost text-4xl text-slate-600 mb-3"></i>
+                <p class="text-slate-400 font-inter">Предметів не знайдено</p>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- FOOTER SECTION -->
+    <footer class="mt-16 py-8 px-4 border-t border-white/10 bg-slate-950/80 backdrop-blur-md relative z-10">
+        <div class="container mx-auto max-w-4xl text-center">
+            <div class="flex justify-center items-center gap-2 mb-3 text-sunset-peach text-sm font-semibold">
+                <i class="fa-solid fa-heart"></i> 9-А клас • Ходосівський ліцей
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto leading-relaxed font-inter">
+                <i class="fa-solid fa-triangle-exclamation text-amber-400/80 mr-1"></i>
+                Можливо, деякі посилання вже не активні, автор сайту не бере на себе відповідальність.
+            </p>
+            <p class="text-[11px] text-slate-500 mt-4 font-inter">
+                &copy; <span id="currentYear"></span> 9-А Клас. Усі права захищено.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification for Copying Link -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl border border-sunset-orange/30 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Посилання скопійовано!</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Subjects Dataset
+        const subjects = [
+            {
+                id: 'art',
+                name: 'Мистецтво',
+                icon: 'fa-palette',
+                color: 'from-pink-500 to-rose-500',
+                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
+            },
+            {
+                id: 'cs',
+                name: 'Інформатика',
+                icon: 'fa-laptop-code',
+                color: 'from-blue-500 to-cyan-500',
+                url: 'https://us04web.zoom.us/j/71985036194?pwd=GZnBIfbGYmzpcZ8a4s7lGfpIxj68zu.1'
+            },
+            {
+                id: 'law',
+                name: 'Правознавство',
+                icon: 'fa-scale-balanced',
+                color: 'from-amber-500 to-yellow-500',
+                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
+            },
+            {
+                id: 'civic',
+                name: 'Громадянська освіта',
+                icon: 'fa-people-roof',
+                color: 'from-emerald-500 to-teal-500',
+                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
+            },
+            {
+                id: 'geom',
+                name: 'Геометрія',
+                icon: 'fa-shapes',
+                color: 'from-indigo-500 to-purple-500',
+                url: 'https://us02web.zoom.us/j/77376573336?pwd=AgS6P0hLWvEpSEdK49zVXyAbZpo9aT.1'
+            },
+            {
+                id: 'bio',
+                name: 'Біологія',
+                icon: 'fa-dna',
+                color: 'from-green-500 to-emerald-600',
+                url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1'
+            },
+            {
+                id: 'geo',
+                name: 'Географія',
+                icon: 'fa-earth-europe',
+                color: 'from-cyan-500 to-blue-600',
+                url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1'
+            },
+            {
+                id: 'phys',
+                name: 'Фізика',
+                icon: 'fa-atom',
+                color: 'from-violet-500 to-purple-600',
+                url: 'https://us02web.zoom.us/j/73230486061?pwd=9jNlGkH5Zywvk9wGoGnxzismPNcGd0.1'
+            },
+            {
+                id: 'alg',
+                name: 'Алгебра',
+                icon: 'fa-calculator',
+                color: 'from-orange-500 to-red-500',
+                url: 'https://us02web.zoom.us/j/79167002158?pwd=AkG8KdLpisz3AKLLrcmfcPO3tfBTbx.1'
+            },
+            {
+                id: 'ent',
+                name: 'Підприємництво',
+                icon: 'fa-chart-line',
+                color: 'from-amber-500 to-orange-600',
+                url: 'https://us02web.zoom.us/j/79777048151?pwd=yXOg7Ls2SjkLRER016mjZjCtj0Cm0u.1'
+            },
+            {
+                id: 'chem',
+                name: 'Хімія',
+                icon: 'fa-flask-vial',
+                color: 'from-teal-400 to-emerald-500',
+                url: 'https://us05web.zoom.us/j/89476023696?pwd=NIc3h5jlAGYcW1A6DWB8joSbZLnCa9.1'
+            },
+            {
+                id: 'ukr_lang',
+                name: 'Українська мова',
+                icon: 'fa-language',
+                color: 'from-yellow-400 to-amber-500',
+                url: 'https://us05web.zoom.us/j/6440761312?pwd=ejZ1SzMwa1hSeitSSkNLV0hZVklkQT09'
+            },
+            {
+                id: 'ukr_lit',
+                name: 'Українська література',
+                icon: 'fa-book-open',
+                color: 'from-amber-600 to-yellow-600',
+                url: 'https://us04web.zoom.us/j/75376162218?pwd=BswBCnHaav6oWhxzr8BpdJ3TDh1DZA.1'
+            },
+            {
+                id: 'foreign_lit',
+                name: 'Зарубіжна література',
+                icon: 'fa-book-bookmark',
+                color: 'from-rose-500 to-pink-600',
+                url: 'https://us02web.zoom.us/j/71439288040?pwd=lW1tiike5mffRaKU4i69NeLJNBabyp.1'
+            },
+            {
+                id: 'eng',
+                name: 'Англійська мова',
+                icon: 'fa-globe',
+                color: 'from-sky-400 to-indigo-500',
+                url: 'https://us04web.zoom.us/j/4894187705?pwd=ZTZ6d25IRnY0MEFndjRIcGhvYWttZz09'
+            },
+            {
+                id: 'hist',
+                name: 'Історія України / Всесвітня',
+                icon: 'fa-monument',
+                color: 'from-yellow-500 to-amber-700',
+                url: 'https://us05web.zoom.us/j/9476411133?pwd=WDdiK1JvT3YrQmdJTzJmYUk3aUM5dz09'
+            }
+        ];
+
+        // Render Function
+        function renderSubjects(items) {
+            const grid = document.getElementById('subjectsGrid');
+            const noResults = document.getElementById('noResults');
+            const subjectCount = document.getElementById('subjectCount');
+            
+            grid.innerHTML = '';
+            subjectCount.textContent = `Всього: ${items.length}`;
+
+            if (items.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            items.forEach((subject) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl p-5 flex flex-col justify-between relative group';
+                
+                card.innerHTML = `
+                    <div>
+                        <!-- Header with Icon & Copy Link -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${subject.color} flex items-center justify-center text-white text-xl shadow-md group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid ${subject.icon}"></i>
+                            </div>
+                            <button onclick="copyLink('${subject.url}')" title="Скопіювати посилання" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+
+                        <!-- Subject Title -->
+                        <h4 class="text-lg font-bold text-white mb-2 group-hover:text-sunset-peach transition-colors">
+                            ${subject.name}
+                        </h4>
+                        
+                        <p class="text-xs text-slate-400 mb-6 flex items-center gap-1.5 font-inter">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Zoom Конференція
+                        </p>
+                    </div>
+
+                    <!-- Join Button -->
+                    <a href="${subject.url}" target="_blank" rel="noopener noreferrer" 
+                       class="sunset-btn w-full py-3 px-4 rounded-xl text-center font-bold text-white text-sm shadow-lg flex items-center justify-center gap-2 group-hover:shadow-sunset-orange/40">
+                        <span>Приєднатися</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Filter
+        document.getElementById('subjectSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = subjects.filter(s => s.name.toLowerCase().includes(query));
+            renderSubjects(filtered);
+        });
+
+        // Copy Link to Clipboard
+        function copyLink(url) {
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast('Посилання скопійовано!');
+        }
+
+        // Show Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Scroll Reveal Animations
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
+        }
+
+        // Initial Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSubjects(subjects);
+            initScrollObserver();
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
