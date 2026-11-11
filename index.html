@@ -37,12 +37,24 @@
     </script>
 
     <style>
-        /* Base styles */
+        /* Base styles & Anti-copy / Anti-right-click */
         body {
             font-family: 'Montserrat', 'Inter', sans-serif;
             background-color: #0a0a12;
             color: #f3f4f6;
             overflow-x: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Дозволяємо взаємодію з посиланнями та кнопками */
+        a, button, input {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
         }
 
         /* Sunset Animated Canvas & Sky Background */
@@ -170,21 +182,47 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Entrance Animations */
-        .fade-in-up {
+        /* Entrance Animations (Scroll Reveal) */
+        .reveal-item {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(35px) scale(0.96);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
         }
 
-        .fade-in-up.visible {
+        .reveal-item.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+        }
+
+        /* Canceled Subject Styling (Фізра, Тех) без напису "не проводиться" */
+        .canceled-subject {
+            border: 1px dashed rgba(255, 255, 255, 0.18) !important;
+            background: rgba(255, 255, 255, 0.02) !important;
+            opacity: 0.45;
+            color: #94a3b8 !important;
+        }
+        .canceled-subject::after {
+            display: none !important;
+        }
+
+        /* Active Lesson Glow in Schedule */
+        .active-lesson-cell {
+            background: rgba(255, 126, 95, 0.2) !important;
+            border: 1.5px solid #ff7e5f !important;
+            box-shadow: 0 0 15px rgba(255, 126, 95, 0.4);
+            animation: pulseActive 2s infinite alternate;
+        }
+
+        @keyframes pulseActive {
+            0% { box-shadow: 0 0 10px rgba(255, 126, 95, 0.3); }
+            100% { shadow: 0 0 22px rgba(255, 94, 98, 0.7); }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
             background: #0a0a12;
@@ -198,7 +236,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between text-slate-100 antialiased selection:bg-sunset-orange selection:text-white">
+<body class="min-h-screen flex flex-col justify-between text-slate-100 antialiased selection:bg-sunset-orange selection:text-white" oncontextmenu="return false;">
 
     <!-- Background Elements -->
     <div class="sky-bg"></div>
@@ -210,7 +248,7 @@
     <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
 
         <!-- HEADER SECTION -->
-        <header class="text-center pt-6 pb-8 fade-in-up">
+        <header class="text-center pt-6 pb-8 reveal-item">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-4 text-xs font-semibold tracking-wider text-sunset-peach uppercase">
                 <i class="fa-solid fa-graduation-cap"></i> Навчальний простір
             </div>
@@ -223,9 +261,8 @@
         </header>
 
         <!-- DYNAMIC FLOATING CLOUD HERO CONTAINER -->
-        <section class="mb-12 fade-in-up" style="transition-delay: 150ms;">
+        <section class="mb-10 reveal-item">
             <div class="floating-cloud-card rounded-3xl p-6 sm:p-8 text-center max-w-3xl mx-auto relative overflow-hidden">
-                <!-- Sun Glow Effect in background -->
                 <div class="absolute -top-12 -left-12 w-32 h-32 bg-sunset-orange/20 rounded-full blur-2xl"></div>
                 <div class="absolute -bottom-12 -right-12 w-32 h-32 bg-sunset-pink/20 rounded-full blur-2xl"></div>
 
@@ -237,24 +274,95 @@
                         Онлайн-кабінет уроків
                     </h2>
                     <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto font-inter leading-relaxed">
-                        Обирайте потрібний предмет нижче та швидко приєднуйтесь до Zoom-конференцій у декілька кліків. Усі уроки зібрані в одному зручному місці.
+                        Слідкуйте за розкладом уроків у реальному часі та швидко переходьте за посиланнями Zoom.
                     </p>
 
-                    <!-- Quick Filter Search Input -->
+                    <!-- Quick Search Bar -->
                     <div class="mt-6 max-w-md mx-auto relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="subjectSearch" placeholder="Швидкий пошук предмета..." 
+                        <input type="text" id="subjectSearch" placeholder="Швидкий пошук предмета Zoom..." 
                                class="w-full bg-slate-900/60 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-sunset-orange focus:ring-1 focus:ring-sunset-orange transition-all backdrop-blur-md">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SUBJECT CARDS GRID SECTION -->
-        <main class="fade-in-up" style="transition-delay: 300ms;">
-            <div class="flex items-center justify-between mb-6 px-2">
-                <h3 class="text-lg font-semibold text-slate-300 flex items-center gap-2">
-                    <i class="fa-solid fa-book-bookmark text-sunset-orange"></i> Предмети та посилання
+        <!-- LIVE TIME STATUS PANEL -->
+        <section class="mb-10 reveal-item">
+            <div class="glass-card rounded-2xl p-5 sm:p-6 border border-white/10 relative overflow-hidden">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 text-center md:text-left">
+                        <div class="w-12 h-12 rounded-xl bg-sunset-orange/20 border border-sunset-orange/40 flex items-center justify-center text-sunset-peach text-xl">
+                            <i class="fa-regular fa-clock animate-pulse"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-slate-400 font-medium">Статус уроків зараз</div>
+                            <div id="statusTitle" class="text-lg sm:text-xl font-bold text-white mt-0.5">
+                                Завантаження часу...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Countdown Box -->
+                    <div class="bg-slate-950/60 border border-white/10 px-5 py-3 rounded-xl flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="text-[10px] uppercase tracking-wider text-slate-400">Зворотний відлік</div>
+                            <div id="timerCountdown" class="text-xl sm:text-2xl font-mono font-bold text-sunset-peach">
+                                --:--
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-hourglass-half text-sunset-orange text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCHEDULE SECTION (TABLE & MOBILE TABS) -->
+        <section class="mb-14 reveal-item">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 px-1">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-sunset-orange"></i> Розклад уроків 9-А
+                    </h3>
+                    <p class="text-xs text-slate-400 font-inter mt-1">Оновлено згідно з актуальним шкільним сітковим розкладом</p>
+                </div>
+                
+                <!-- Day Selectors for Mobile -->
+                <div class="flex gap-1 overflow-x-auto pb-2 sm:pb-0 scrollbar-none" id="dayTabs">
+                    <button onclick="switchDayTab(1)" data-day="1" class="day-tab px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-white/5 border-white/10 hover:bg-white/10">Пн</button>
+                    <button onclick="switchDayTab(2)" data-day="2" class="day-tab px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-white/5 border-white/10 hover:bg-white/10">Вт</button>
+                    <button onclick="switchDayTab(3)" data-day="3" class="day-tab px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-white/5 border-white/10 hover:bg-white/10">Ср</button>
+                    <button onclick="switchDayTab(4)" data-day="4" class="day-tab px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-white/5 border-white/10 hover:bg-white/10">Чт</button>
+                    <button onclick="switchDayTab(5)" data-day="5" class="day-tab px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all bg-white/5 border-white/10 hover:bg-white/10">Пт</button>
+                </div>
+            </div>
+
+            <!-- Schedule Desktop Table View -->
+            <div class="glass-card rounded-2xl p-2 sm:p-4 border border-white/10 overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="border-b border-white/10 text-xs text-slate-400 uppercase font-medium">
+                            <th class="p-3 w-12 text-center">№</th>
+                            <th class="p-3 w-32">Час</th>
+                            <th class="p-3 day-col-1">Понеділок</th>
+                            <th class="p-3 day-col-2">Вівторок</th>
+                            <th class="p-3 day-col-3">Середа</th>
+                            <th class="p-3 day-col-4">Четвер</th>
+                            <th class="p-3 day-col-5">П'ятниця</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody" class="text-sm font-inter divide-y divide-white/5">
+                        <!-- Table Rows Injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SUBJECT CARDS ZOOM GRID SECTION -->
+        <main class="reveal-item">
+            <div class="flex items-center justify-between mb-6 px-1">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-video text-sunset-pink"></i> Посилання Zoom (Приєднання)
                 </h3>
                 <span id="subjectCount" class="text-xs font-medium px-3 py-1 rounded-full bg-white/10 text-slate-300">
                     Всього: 16
@@ -292,130 +400,199 @@
     </footer>
 
     <!-- Toast Notification for Copying Link -->
-    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl border border-sunset-orange/30 flex items-center gap-3">
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-800 text-white px-4 py-3 rounded-xl shadow-2xl border border-sunset-orange/30 flex items-center gap-3 pointer-events-none">
         <i class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="toastMsg" class="text-sm font-medium">Посилання скопійовано!</span>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Subjects Dataset
-        const subjects = [
-            {
-                id: 'art',
-                name: 'Мистецтво',
-                icon: 'fa-palette',
-                color: 'from-pink-500 to-rose-500',
-                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
-            },
-            {
-                id: 'cs',
-                name: 'Інформатика',
-                icon: 'fa-laptop-code',
-                color: 'from-blue-500 to-cyan-500',
-                url: 'https://us04web.zoom.us/j/71985036194?pwd=GZnBIfbGYmzpcZ8a4s7lGfpIxj68zu.1'
-            },
-            {
-                id: 'law',
-                name: 'Правознавство',
-                icon: 'fa-scale-balanced',
-                color: 'from-amber-500 to-yellow-500',
-                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
-            },
-            {
-                id: 'civic',
-                name: 'Громадянська освіта',
-                icon: 'fa-people-roof',
-                color: 'from-emerald-500 to-teal-500',
-                url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1'
-            },
-            {
-                id: 'geom',
-                name: 'Геометрія',
-                icon: 'fa-shapes',
-                color: 'from-indigo-500 to-purple-500',
-                url: 'https://us02web.zoom.us/j/77376573336?pwd=AgS6P0hLWvEpSEdK49zVXyAbZpo9aT.1'
-            },
-            {
-                id: 'bio',
-                name: 'Біологія',
-                icon: 'fa-dna',
-                color: 'from-green-500 to-emerald-600',
-                url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1'
-            },
-            {
-                id: 'geo',
-                name: 'Географія',
-                icon: 'fa-earth-europe',
-                color: 'from-cyan-500 to-blue-600',
-                url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1'
-            },
-            {
-                id: 'phys',
-                name: 'Фізика',
-                icon: 'fa-atom',
-                color: 'from-violet-500 to-purple-600',
-                url: 'https://us02web.zoom.us/j/73230486061?pwd=9jNlGkH5Zywvk9wGoGnxzismPNcGd0.1'
-            },
-            {
-                id: 'alg',
-                name: 'Алгебра',
-                icon: 'fa-calculator',
-                color: 'from-orange-500 to-red-500',
-                url: 'https://us02web.zoom.us/j/79167002158?pwd=AkG8KdLpisz3AKLLrcmfcPO3tfBTbx.1'
-            },
-            {
-                id: 'ent',
-                name: 'Підприємництво',
-                icon: 'fa-chart-line',
-                color: 'from-amber-500 to-orange-600',
-                url: 'https://us02web.zoom.us/j/79777048151?pwd=yXOg7Ls2SjkLRER016mjZjCtj0Cm0u.1'
-            },
-            {
-                id: 'chem',
-                name: 'Хімія',
-                icon: 'fa-flask-vial',
-                color: 'from-teal-400 to-emerald-500',
-                url: 'https://us05web.zoom.us/j/89476023696?pwd=NIc3h5jlAGYcW1A6DWB8joSbZLnCa9.1'
-            },
-            {
-                id: 'ukr_lang',
-                name: 'Українська мова',
-                icon: 'fa-language',
-                color: 'from-yellow-400 to-amber-500',
-                url: 'https://us05web.zoom.us/j/6440761312?pwd=ejZ1SzMwa1hSeitSSkNLV0hZVklkQT09'
-            },
-            {
-                id: 'ukr_lit',
-                name: 'Українська література',
-                icon: 'fa-book-open',
-                color: 'from-amber-600 to-yellow-600',
-                url: 'https://us04web.zoom.us/j/75376162218?pwd=BswBCnHaav6oWhxzr8BpdJ3TDh1DZA.1'
-            },
-            {
-                id: 'foreign_lit',
-                name: 'Зарубіжна література',
-                icon: 'fa-book-bookmark',
-                color: 'from-rose-500 to-pink-600',
-                url: 'https://us02web.zoom.us/j/71439288040?pwd=lW1tiike5mffRaKU4i69NeLJNBabyp.1'
-            },
-            {
-                id: 'eng',
-                name: 'Англійська мова',
-                icon: 'fa-globe',
-                color: 'from-sky-400 to-indigo-500',
-                url: 'https://us04web.zoom.us/j/4894187705?pwd=ZTZ6d25IRnY0MEFndjRIcGhvYWttZz09'
-            },
-            {
-                id: 'hist',
-                name: 'Історія України / Всесвітня',
-                icon: 'fa-monument',
-                color: 'from-yellow-500 to-amber-700',
-                url: 'https://us05web.zoom.us/j/9476411133?pwd=WDdiK1JvT3YrQmdJTzJmYUk3aUM5dz09'
-            }
+        // Disable text selection and right-click completely
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('selectstart', event => event.preventDefault());
+
+        // Schedule Data with exact lessons from image
+        const scheduleData = [
+            { num: 1, start: "08:30", end: "09:15", days: ["Геог", "Геог", "Фізра", "Хімія", "Інф, Група 1"] },
+            { num: 2, start: "09:30", end: "10:15", days: ["Англ мова", "Всесвітня історія", "Історія України", "Правознавство", "Біологія"] },
+            { num: 3, start: "10:30", end: "11:15", days: ["Біологія", "Хімія", "Мист", "Англ мова", "Громадянська освіта"] },
+            { num: 4, start: "11:30", end: "12:15", days: ["Заруб літ", "Укр мова", "Геометрія", "Укр літ", "Фізика"] },
+            { num: 5, start: "12:30", end: "13:15", days: ["Фізра", "Укр літ", "Алгебра", "Алгебра", "Англ мова"] },
+            { num: 6, start: "13:30", end: "14:15", days: ["Історія України", "Геометрія", "Фізика", "Інф, Група 1", "Заруб літ"] },
+            { num: 7, start: "14:30", end: "15:15", days: ["ЗБД", "-", "Укр мова", "Підприємництво і фінансова грамотність", "Фізра"] },
+            { num: 8, start: "15:25", end: "16:10", days: ["Укр мова", "-", "Інф, Група 2", "Тех", "-"] },
+            { num: 9, start: "16:20", end: "17:05", days: ["-", "-", "-", "Фізика", "-"] }
         ];
 
-        // Render Function
+        // Zoom Subjects Dataset
+        const subjects = [
+            { id: 'art', name: 'Мистецтво', icon: 'fa-palette', color: 'from-pink-500 to-rose-500', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'cs', name: 'Інформатика', icon: 'fa-laptop-code', color: 'from-blue-500 to-cyan-500', url: 'https://us04web.zoom.us/j/71985036194?pwd=GZnBIfbGYmzpcZ8a4s7lGfpIxj68zu.1' },
+            { id: 'law', name: 'Правознавство', icon: 'fa-scale-balanced', color: 'from-amber-500 to-yellow-500', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'civic', name: 'Громадянська освіта', icon: 'fa-people-roof', color: 'from-emerald-500 to-teal-500', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'geom', name: 'Геометрія', icon: 'fa-shapes', color: 'from-indigo-500 to-purple-500', url: 'https://us02web.zoom.us/j/77376573336?pwd=AgS6P0hLWvEpSEdK49zVXyAbZpo9aT.1' },
+            { id: 'bio', name: 'Біологія', icon: 'fa-dna', color: 'from-green-500 to-emerald-600', url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1' },
+            { id: 'geo', name: 'Географія', icon: 'fa-earth-europe', color: 'from-cyan-500 to-blue-600', url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1' },
+            { id: 'phys', name: 'Фізика', icon: 'fa-atom', color: 'from-violet-500 to-purple-600', url: 'https://us02web.zoom.us/j/73230486061?pwd=9jNlGkH5Zywvk9wGoGnxzismPNcGd0.1' },
+            { id: 'alg', name: 'Алгебра', icon: 'fa-calculator', color: 'from-orange-500 to-red-500', url: 'https://us02web.zoom.us/j/79167002158?pwd=AkG8KdLpisz3AKLLrcmfcPO3tfBTbx.1' },
+            { id: 'ent', name: 'Підприємництво', icon: 'fa-chart-line', color: 'from-amber-500 to-orange-600', url: 'https://us02web.zoom.us/j/79777048151?pwd=yXOg7Ls2SjkLRER016mjZjCtj0Cm0u.1' },
+            { id: 'chem', name: 'Хімія', icon: 'fa-flask-vial', color: 'from-teal-400 to-emerald-500', url: 'https://us05web.zoom.us/j/89476023696?pwd=NIc3h5jlAGYcW1A6DWB8joSbZLnCa9.1' },
+            { id: 'ukr_lang', name: 'Українська мова', icon: 'fa-language', color: 'from-yellow-400 to-amber-500', url: 'https://us05web.zoom.us/j/6440761312?pwd=ejZ1SzMwa1hSeitSSkNLV0hZVklkQT09' },
+            { id: 'ukr_lit', name: 'Українська література', icon: 'fa-book-open', color: 'from-amber-600 to-yellow-600', url: 'https://us04web.zoom.us/j/75376162218?pwd=BswBCnHaav6oWhxzr8BpdJ3TDh1DZA.1' },
+            { id: 'foreign_lit', name: 'Зарубіжна література', icon: 'fa-book-bookmark', color: 'from-rose-500 to-pink-600', url: 'https://us02web.zoom.us/j/71439288040?pwd=lW1tiike5mffRaKU4i69NeLJNBabyp.1' },
+            { id: 'eng', name: 'Англійська мова', icon: 'fa-globe', color: 'from-sky-400 to-indigo-500', url: 'https://us04web.zoom.us/j/4894187705?pwd=ZTZ6d25IRnY0MEFndjRIcGhvYWttZz09' },
+            { id: 'hist', name: 'Історія України / Всесвітня', icon: 'fa-monument', color: 'from-yellow-500 to-amber-700', url: 'https://us05web.zoom.us/j/9476411133?pwd=WDdiK1JvT3YrQmdJTzJmYUk3aUM5dz09' }
+        ];
+
+        // Render Schedule Table
+        function renderSchedule() {
+            const tbody = document.getElementById('scheduleTableBody');
+            tbody.innerHTML = '';
+
+            scheduleData.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-white/5 transition-colors';
+
+                let dayCellsHTML = '';
+                item.days.forEach((subj, dayIndex) => {
+                    const isCanceled = subj === 'Фізра' || subj === 'Тех';
+                    const canceledClass = isCanceled ? 'canceled-subject' : '';
+                    const emptyClass = subj === '-' ? 'text-slate-600' : 'text-slate-200';
+
+                    dayCellsHTML += `
+                        <td class="p-3 day-col-${dayIndex + 1}" data-day="${dayIndex + 1}" data-lesson="${item.num}">
+                            <div class="px-2.5 py-1.5 rounded-lg border border-white/5 bg-white/5 ${canceledClass} ${emptyClass} text-xs font-semibold inline-block w-full text-center sm:text-left">
+                                ${subj}
+                            </div>
+                        </td>
+                    `;
+                });
+
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-center text-sunset-orange">${item.num}</td>
+                    <td class="p-3 text-xs text-slate-400 whitespace-nowrap font-mono">${item.start} - ${item.end}</td>
+                    ${dayCellsHTML}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Live Time Tracker & Active Lesson Highlight
+        function updateLiveStatus() {
+            const now = new Date();
+            const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentSeconds = now.getSeconds();
+
+            const statusTitle = document.getElementById('statusTitle');
+            const timerCountdown = document.getElementById('timerCountdown');
+
+            // Clear active cell highlights
+            document.querySelectorAll('.active-lesson-cell').forEach(el => el.classList.remove('active-lesson-cell'));
+
+            // Weekend Check
+            if (currentDay === 0 || currentDay === 6) {
+                statusTitle.innerHTML = `<span class="text-emerald-400">Сьогодні вихідний!</span> 🌴`;
+                timerCountdown.textContent = "00:00:00";
+                highlightActiveTab(currentDay === 6 ? 5 : 1);
+                return;
+            }
+
+            highlightActiveTab(currentDay);
+
+            let activeLesson = null;
+            let nextLesson = null;
+
+            for (let i = 0; i < scheduleData.length; i++) {
+                const lesson = scheduleData[i];
+                const [startH, startM] = lesson.start.split(':').map(Number);
+                const [endH, endM] = lesson.end.split(':').map(Number);
+
+                const startTotal = startH * 60 + startM;
+                const endTotal = endH * 60 + endM;
+
+                if (currentMinutes >= startTotal && currentMinutes <= endTotal) {
+                    activeLesson = { ...lesson, startTotal, endTotal };
+                    break;
+                } else if (currentMinutes < startTotal) {
+                    nextLesson = { ...lesson, startTotal, endTotal };
+                    break;
+                }
+            }
+
+            if (activeLesson) {
+                const subjectName = activeLesson.days[currentDay - 1];
+                statusTitle.innerHTML = `Урок ${activeLesson.num}: <span class="text-sunset-peach font-bold">${subjectName}</span>`;
+
+                // Highlight cell in schedule
+                const activeCell = document.querySelector(`[data-day="${currentDay}"][data-lesson="${activeLesson.num}"] div`);
+                if (activeCell) activeCell.classList.add('active-lesson-cell');
+
+                // Countdown to end of lesson
+                const secondsLeft = (activeLesson.endTotal * 60) - (currentMinutes * 60 + currentSeconds);
+                timerCountdown.textContent = formatTime(secondsLeft);
+
+            } else if (nextLesson) {
+                statusTitle.innerHTML = `Зараз <span class="text-amber-400">перерва</span> (наст: ${nextLesson.days[currentDay - 1]})`;
+
+                // Countdown to start of next lesson
+                const secondsLeft = (nextLesson.startTotal * 60) - (currentMinutes * 60 + currentSeconds);
+                timerCountdown.textContent = formatTime(secondsLeft);
+            } else {
+                const dayStartMins = 8 * 60 + 30; // 08:30
+                if (currentMinutes < dayStartMins) {
+                    statusTitle.innerHTML = `<span class="text-sky-400">Уроки ще не почалися</span>`;
+                    const secondsLeft = (dayStartMins * 60) - (currentMinutes * 60 + currentSeconds);
+                    timerCountdown.textContent = formatTime(secondsLeft);
+                } else {
+                    statusTitle.innerHTML = `<span class="text-purple-400">Навчальний день завершено!</span> ✨`;
+                    timerCountdown.textContent = "00:00:00";
+                }
+            }
+        }
+
+        function formatTime(totalSeconds) {
+            if (totalSeconds < 0) return "00:00";
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Switch Day Tabs for Responsive Display
+        function switchDayTab(dayNum) {
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-day')) === dayNum) {
+                    btn.classList.add('bg-sunset-orange', 'text-white', 'border-sunset-orange');
+                    btn.classList.remove('bg-white/5', 'text-slate-300');
+                } else {
+                    btn.classList.remove('bg-sunset-orange', 'text-white', 'border-sunset-orange');
+                    btn.classList.add('bg-white/5', 'text-slate-300');
+                }
+            });
+
+            // On smaller screens, filter or highlight active day column
+            for (let i = 1; i <= 5; i++) {
+                const cols = document.querySelectorAll(`.day-col-${i}`);
+                cols.forEach(col => {
+                    if (window.innerWidth < 640) {
+                        if (i === dayNum) {
+                            col.style.display = '';
+                        } else {
+                            col.style.display = 'none';
+                        }
+                    } else {
+                        col.style.display = '';
+                    }
+                });
+            }
+        }
+
+        function highlightActiveTab(dayNum) {
+            const validDay = dayNum >= 1 && dayNum <= 5 ? dayNum : 1;
+            switchDayTab(validDay);
+        }
+
+        // Render Zoom Cards
         function renderSubjects(items) {
             const grid = document.getElementById('subjectsGrid');
             const noResults = document.getElementById('noResults');
@@ -433,11 +610,10 @@
 
             items.forEach((subject) => {
                 const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl p-5 flex flex-col justify-between relative group';
+                card.className = 'glass-card rounded-2xl p-5 flex flex-col justify-between relative group reveal-item';
                 
                 card.innerHTML = `
                     <div>
-                        <!-- Header with Icon & Copy Link -->
                         <div class="flex items-center justify-between mb-4">
                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br ${subject.color} flex items-center justify-center text-white text-xl shadow-md group-hover:scale-110 transition-transform duration-300">
                                 <i class="fa-solid ${subject.icon}"></i>
@@ -447,7 +623,6 @@
                             </button>
                         </div>
 
-                        <!-- Subject Title -->
                         <h4 class="text-lg font-bold text-white mb-2 group-hover:text-sunset-peach transition-colors">
                             ${subject.name}
                         </h4>
@@ -458,7 +633,6 @@
                         </p>
                     </div>
 
-                    <!-- Join Button -->
                     <a href="${subject.url}" target="_blank" rel="noopener noreferrer" 
                        class="sunset-btn w-full py-3 px-4 rounded-xl text-center font-bold text-white text-sm shadow-lg flex items-center justify-center gap-2 group-hover:shadow-sunset-orange/40">
                         <span>Приєднатися</span>
@@ -467,6 +641,9 @@
                 `;
                 grid.appendChild(card);
             });
+            
+            // Re-bind IntersectionObserver for new elements
+            initScrollObserver();
         }
 
         // Search Filter
@@ -488,7 +665,7 @@
             showToast('Посилання скопійовано!');
         }
 
-        // Show Toast Notification
+        // Toast Notification
         function showToast(message) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
@@ -509,15 +686,23 @@
                         entry.target.classList.add('visible');
                     }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.08 });
 
-            document.querySelectorAll('.fade-in-up').forEach((el) => observer.observe(el));
+            document.querySelectorAll('.reveal-item').forEach((el) => observer.observe(el));
         }
+
+        // Handle Window Resize for Responsive Schedule Column View
+        window.addEventListener('resize', () => {
+            const activeDay = new Date().getDay();
+            switchDayTab(activeDay >= 1 && activeDay <= 5 ? activeDay : 1);
+        });
 
         // Initial Load
         window.addEventListener('DOMContentLoaded', () => {
+            renderSchedule();
             renderSubjects(subjects);
-            initScrollObserver();
+            updateLiveStatus();
+            setInterval(updateLiveStatus, 1000);
             document.getElementById('currentYear').textContent = new Date().getFullYear();
         });
     </script>
