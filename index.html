@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ходосівський ліцей 9-А клас — Зимовий простір</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Montserrat & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        winter: {
+                            ice: '#f0f9ff',
+                            frost: '#e0f2fe',
+                            sky: '#38bdf8',
+                            azure: '#0284c7',
+                            deep: '#0c4a6e',
+                            glacier: '#7dd3fc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Базові стилі та захист від копіювання */
+        body {
+            font-family: 'Plus Jakarta Sans', 'Montserrat', sans-serif;
+            background: linear-gradient(165deg, #f8fcff 0%, #e6f4fe 35%, #d2ecfd 70%, #e8f6ff 100%);
+            color: #0f2942;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Дозволяємо ввід тексту у форми */
+        a, button, input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        /* Зимовий фоновий градієнт з м'яким полярним сяйвом */
+        .winter-sky-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(125, 211, 252, 0.45) 0%, transparent 45%),
+                radial-gradient(circle at 85% 25%, rgba(186, 230, 253, 0.55) 0%, transparent 50%),
+                radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.25) 0%, transparent 55%),
+                linear-gradient(180deg, #f4faff 0%, #e0f2fe 50%, #cdeafe 100%);
+        }
+
+        /* Верхній бордюр із крижаних бурульок */
+        .icicles-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 44px;
+            z-index: 40;
+            pointer-events: none;
+            background-repeat: repeat-x;
+            background-size: 240px 44px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='44' viewBox='0 0 240 44'%3E%3Cdefs%3E%3ClinearGradient id='iceGrad' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.95'/%3E%3Cstop offset='55%25' stop-color='%23bae6fd' stop-opacity='0.85'/%3E%3Cstop offset='100%25' stop-color='%2338bdf8' stop-opacity='0.65'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0,0 L240,0 L240,5 C234,5 232,24 229,24 C226,24 224,6 218,6 C212,6 208,38 204,38 C200,38 197,7 190,7 C184,7 181,19 178,19 C175,19 172,5 164,5 C156,5 152,42 147,42 C142,42 139,6 131,6 C125,6 122,22 119,22 C116,22 113,5 104,5 C96,5 93,31 89,31 C85,31 82,6 74,6 C67,6 64,17 61,17 C58,17 55,5 46,5 C38,5 34,36 30,36 C26,36 23,6 15,6 C8,6 5,20 2,20 C1,20 0,10 0,5 Z' fill='url(%23iceGrad)'/%3E%3C/svg%3E");
+            filter: drop-shadow(0 4px 8px rgba(14, 116, 144, 0.14));
+        }
+
+        /* Canvas для снігу та святкового конфеті */
+        #snowCanvas, #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #snowCanvas { z-index: -1; }
+        #confettiCanvas { z-index: 60; }
+
+        /* Скляні крижані картки (Frosted Ice Glass) */
+        .ice-card {
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            box-shadow: 0 10px 30px -8px rgba(14, 116, 144, 0.12),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.32s ease,
+                        background 0.32s ease;
+        }
+
+        .ice-card:hover {
+            transform: translateY(-5px) scale(1.015);
+            background: rgba(255, 255, 255, 0.88);
+            border-color: rgba(56, 189, 248, 0.65);
+            box-shadow: 0 18px 38px -8px rgba(2, 132, 199, 0.22),
+                        0 0 22px rgba(125, 211, 252, 0.45),
+                        inset 0 1px 0 #ffffff;
+        }
+
+        /* Універсальна інтерактивна анімація кнопок */
+        .winter-interactive {
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.25s ease,
+                        background 0.25s ease,
+                        border-color 0.25s ease;
+        }
+
+        .winter-interactive:hover {
+            transform: scale(1.04) translateY(-2px);
+            box-shadow: 0 10px 25px -4px rgba(2, 132, 199, 0.32),
+                        0 0 16px rgba(56, 189, 248, 0.45);
+        }
+
+        .winter-interactive:active {
+            transform: scale(0.96);
+        }
+
+        /* Головна новорічна кнопка */
+        .winter-btn {
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.28s ease;
+        }
+
+        .winter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+            transition: left 0.55s ease;
+        }
+
+        .winter-btn:hover::before {
+            left: 100%;
+        }
+
+        .winter-btn:hover {
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 12px 26px -4px rgba(2, 132, 199, 0.42),
+                        0 0 20px rgba(56, 189, 248, 0.55);
+        }
+
+        .winter-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Градієнтний крижаний текст */
+        .winter-gradient-text {
+            background: linear-gradient(135deg, #0369a1 0%, #0284c7 45%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Плаваюча анімація головного блоку */
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .float-hero {
+            animation: gentleFloat 6s ease-in-out infinite;
+        }
+
+        /* Анімація погойдування подарунка */
+        @keyframes giftWiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            15% { transform: rotate(-7deg) scale(1.06); }
+            30% { transform: rotate(7deg) scale(1.06); }
+            45% { transform: rotate(-4deg) scale(1.03); }
+            60% { transform: rotate(4deg) scale(1.03); }
+            75% { transform: rotate(0deg) scale(1); }
+        }
+        .gift-wiggle {
+            animation: giftWiggle 2.8s ease-in-out infinite;
+        }
+
+        /* Вибух подарунка */
+        @keyframes giftExplode {
+            0% { transform: scale(1); opacity: 1; }
+            40% { transform: scale(1.45) rotate(12deg); opacity: 0.9; filter: brightness(1.4); }
+            100% { transform: scale(0.1) rotate(-20deg); opacity: 0; }
+        }
+        .gift-exploding {
+            animation: giftExplode 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Поява побажання */
+        @keyframes wishPop {
+            0% { transform: scale(0.75) translateY(10px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .wish-pop {
+            animation: wishPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Скасовані уроки (Фізра, Тех) */
+        .canceled-subject {
+            border: 1px dashed rgba(14, 116, 144, 0.25) !important;
+            background: rgba(240, 249, 255, 0.45) !important;
+            opacity: 0.55;
+            color: #64748b !important;
+        }
+
+        /* Підсвітка активного уроку */
+        .active-lesson-cell {
+            background: linear-gradient(135deg, rgba(186, 230, 253, 0.85), rgba(224, 242, 254, 0.95)) !important;
+            border: 1.5px solid #0284c7 !important;
+            color: #0c4a6e !important;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+            animation: activeIcePulse 2s infinite alternate;
+        }
+
+        @keyframes activeIcePulse {
+            0% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+            100% { box-shadow: 0 0 22px rgba(2, 132, 199, 0.65); }
+        }
+
+        /* Плавна поява при скролі */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Анімація сердечка */
+        @keyframes heartBeatPop {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.38); }
+            60% { transform: scale(0.92); }
+            100% { transform: scale(1); }
+        }
+        .heart-pop {
+            animation: heartBeatPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Кастомний скролбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0f2fe;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7dd3fc;
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0284c7;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-sky-400 selection:text-white" oncontextmenu="return false;">
+
+    <!-- Зимовий фон, сніжинки, бурульки та святкове конфеті -->
+    <div class="winter-sky-bg"></div>
+    <div class="icicles-bar" aria-hidden="true"></div>
+    <canvas id="snowCanvas"></canvas>
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Головний контейнер -->
+    <div class="container mx-auto px-4 pt-12 pb-8 max-w-6xl relative z-10">
+
+        <!-- ШАПКА САЙТУ -->
+        <header class="text-center pt-4 pb-8 reveal-item">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-sky-200 shadow-sm backdrop-blur-md mb-4 text-xs font-semibold tracking-wider text-sky-700 uppercase">
+                <i class="fa-regular fa-snowflake text-sky-500 animate-spin" style="animation-duration: 10s;"></i>
+                Зимовий навчальний простір
+            </div>
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-2">
+                <span class="winter-gradient-text">Ходосівський ліцей</span>
+            </h1>
+            <p class="text-xl sm:text-2xl font-bold tracking-wide text-slate-700">
+                9-А клас
+            </p>
+        </header>
+
+        <!-- ВІКНО СВЯТ ТА ВІКНО ДНІВ НАРОДЖЕННЯ (2 ОКРЕМІ ВІДЖЕТИ) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8 reveal-item">
+            
+            <!-- 1. Окреме вікно привітань зі святами -->
+            <div id="holidayCard" class="ice-card rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-8 -top-8 w-28 h-28 rounded-full bg-sky-300/25 blur-xl pointer-events-none"></div>
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-sky-100 text-sky-700 border border-sky-200">
+                            <i class="fa-solid fa-sparkles text-sky-500"></i> Святковий настрій
+                        </span>
+                        <span id="todayDateBadge" class="text-xs font-semibold text-slate-500 bg-white/70 px-2.5 py-1 rounded-lg border border-sky-100">
+                            --.--.----
+                        </span>
+                    </div>
+                    <div class="flex items-start gap-4 mt-2">
+                        <div id="holidayIconBox" class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-2xl shadow-md shadow-sky-300/50">
+                            ❄️
+                        </div>
+                        <div>
+                            <h3 id="holidayTitle" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug">
+                                Зимова казка поруч!
+                            </h3>
+                            <p id="holidayMessage" class="text-sm text-slate-600 mt-1 leading-relaxed">
+                                Нехай кожен навчальний день приносить натхнення, гарні оцінки та теплі посмішки! ❄️✨
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Окреме вікно Днів Народження 9-А класу -->
+            <div id="birthdayCard" class="ice-card rounded-3xl p-6 relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-cyan-300/25 blur-xl pointer-events-none"></div>
+                <div>
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200">
+                            <i class="fa-solid fa-cake-candles text-sky-600"></i> Дні народження класу
+                        </span>
+                        <div class="flex items-center gap-1.5">
+                            <button onclick="toggleBirthdayListModal()" class="winter-interactive text-xs font-semibold px-2.5 py-1 rounded-lg bg-white/80 hover:bg-sky-50 text-sky-700 border border-sky-200" title="Усі дні народження">
+                                <i class="fa-solid fa-list-ul mr-1"></i> Календар
+                            </button>
+                            <button onclick="triggerBirthdayCelebration()" class="winter-interactive text-xs font-semibold px-2.5 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 border border-sky-200" title="Запустити святковий салют">
+                                🎉 Салют
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="birthdayContent" class="flex items-start gap-4 mt-2">
+                        <div id="birthdayIconBox" class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-cyan-400 to-sky-600 text-white flex items-center justify-center text-2xl shadow-md shadow-sky-300/50">
+                            🎂
+                        </div>
+                        <div class="flex-1">
+                            <h3 id="birthdayTitle" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug">
+                                Чекаємо на дні народження 🎂
+                            </h3>
+                            <p id="birthdaySubtitle" class="text-sm text-slate-600 mt-1 leading-relaxed">
+                                Готуємо теплі привітання та святковий настрій для нашого 9-А!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ОНЛАЙН-КАБІНЕТ УРОКІВ + ЩОДЕННИЙ ІНТЕРАКТИВНИЙ ПОДАРУНОК -->
+        <section class="mb-8 reveal-item">
+            <div class="ice-card float-hero rounded-3xl p-6 sm:p-8 text-center max-w-4xl mx-auto relative overflow-hidden">
+                <div class="absolute -top-12 -left-12 w-36 h-36 bg-sky-300/30 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -bottom-12 -right-12 w-36 h-36 bg-blue-300/25 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-sky-400 to-blue-600 flex items-center justify-center text-2xl text-white shadow-lg shadow-sky-400/35">
+                        <i class="fa-solid fa-igloo"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-2 text-slate-800">
+                        Онлайн-кабінет уроків
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+                        Слідкуйте за розкладом у реальному часі та миттєво переходьте на уроки в Zoom.
+                    </p>
+
+                    <!-- Швидкий пошук предметів -->
+                    <div class="mt-6 max-w-md mx-auto relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-sky-500"></i>
+                        <input type="text" id="subjectSearch" placeholder="Швидкий пошук предмета Zoom..." 
+                               class="w-full bg-white/85 border border-sky-200 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200 transition-all shadow-sm">
+                    </div>
+
+                    <!-- ЩОДЕННИЙ ПОДАРУНОК-СЮРПРИЗ -->
+                    <div class="mt-7 pt-6 border-t border-sky-200/70 max-w-lg mx-auto">
+                        <div id="dailyGiftArea" class="flex flex-col items-center justify-center">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-sky-600 mb-2">
+                                ✨ Щоденний новорічний сюрприз для тебе
+                            </p>
+                            <button id="dailyGiftBtn" onclick="openDailyGift()" class="gift-wiggle winter-interactive group relative inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-white via-sky-50 to-white border-2 border-sky-300 shadow-md">
+                                <span class="text-3xl transition-transform duration-300 group-hover:scale-125">🎁</span>
+                                <div class="text-left">
+                                    <div class="text-sm font-bold text-slate-800 group-hover:text-sky-700 transition-colors">
+                                        Натисни на подарунок!
+                                    </div>
+                                    <div class="text-[11px] text-slate-500">
+                                        Дізнайся своє побажання на сьогодні
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Блок відкритого побажання -->
+                        <div id="dailyWishBox" class="hidden wish-pop bg-gradient-to-r from-sky-50 via-white to-sky-50 border border-sky-300 rounded-2xl p-4 shadow-md">
+                            <div class="text-xs font-bold uppercase tracking-wider text-sky-600 mb-1">
+                                🎊 Твоє побажання дня:
+                            </div>
+                            <p id="dailyWishText" class="text-base sm:text-lg font-bold text-slate-800">
+                                Гарного дня! ✨
+                            </p>
+                            <button onclick="openAnotherWish()" class="winter-interactive mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-sky-600 hover:text-sky-800 bg-sky-100/80 px-3 py-1 rounded-lg">
+                                <i class="fa-solid fa-rotate"></i> Ще одне побажання
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ПАНЕЛЬ СТАТУСУ УРОКІВ У РЕАЛЬНОМУ ЧАСІ -->
+        <section class="mb-10 reveal-item">
+            <div class="ice-card rounded-2xl p-5 sm:p-6 relative overflow-hidden">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 text-center md:text-left">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-100 border border-sky-300 flex items-center justify-center text-sky-600 text-xl shadow-inner">
+                            <i class="fa-regular fa-clock animate-pulse"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Статус уроків зараз</div>
+                            <div id="statusTitle" class="text-lg sm:text-xl font-bold text-slate-800 mt-0.5">
+                                Завантаження часу...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Таймер зворотного відліку -->
+                    <div class="bg-white/90 border border-sky-200 px-5 py-3 rounded-2xl flex items-center gap-3 shadow-sm">
+                        <div class="text-right">
+                            <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Зворотний відлік</div>
+                            <div id="timerCountdown" class="text-xl sm:text-2xl font-mono font-bold text-sky-600">
+                                --:--
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-hourglass-half text-sky-500 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- РОЗКЛАД УРОКІВ 9-А -->
+        <section class="mb-14 reveal-item">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 px-1">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-days text-sky-600"></i> Розклад уроків 9-А
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Оновлено згідно з актуальним шкільним сітковим розкладом</p>
+                </div>
+                
+                <!-- Вкладки днів для мобільних пристроїв -->
+                <div class="flex gap-1.5 overflow-x-auto pb-2 sm:pb-0" id="dayTabs">
+                    <button onclick="switchDayTab(1)" data-day="1" class="day-tab winter-interactive px-3.5 py-1.5 rounded-xl text-xs font-bold border">Пн</button>
+                    <button onclick="switchDayTab(2)" data-day="2" class="day-tab winter-interactive px-3.5 py-1.5 rounded-xl text-xs font-bold border">Вт</button>
+                    <button onclick="switchDayTab(3)" data-day="3" class="day-tab winter-interactive px-3.5 py-1.5 rounded-xl text-xs font-bold border">Ср</button>
+                    <button onclick="switchDayTab(4)" data-day="4" class="day-tab winter-interactive px-3.5 py-1.5 rounded-xl text-xs font-bold border">Чт</button>
+                    <button onclick="switchDayTab(5)" data-day="5" class="day-tab winter-interactive px-3.5 py-1.5 rounded-xl text-xs font-bold border">Пт</button>
+                </div>
+            </div>
+
+            <!-- Таблиця розкладу -->
+            <div class="ice-card rounded-3xl p-2 sm:p-4 overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="border-b border-sky-200/80 text-xs text-slate-500 uppercase font-bold">
+                            <th class="p-3 w-12 text-center">№</th>
+                            <th class="p-3 w-32">Час</th>
+                            <th class="p-3 day-col-1">Понеділок</th>
+                            <th class="p-3 day-col-2">Вівторок</th>
+                            <th class="p-3 day-col-3">Середа</th>
+                            <th class="p-3 day-col-4">Четвер</th>
+                            <th class="p-3 day-col-5">П'ятниця</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody" class="text-sm divide-y divide-sky-100">
+                        <!-- Рядки розкладу генеруються через JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- СІТКА ПОСИЛАНЬ ZOOM -->
+        <main class="reveal-item">
+            <div class="flex items-center justify-between mb-6 px-1">
+                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-video text-sky-600"></i> Посилання Zoom (Приєднання)
+                </h3>
+                <span id="subjectCount" class="text-xs font-bold px-3.5 py-1.5 rounded-full bg-white/80 text-sky-700 border border-sky-200 shadow-sm">
+                    Всього: 16
+                </span>
+            </div>
+
+            <!-- Картки предметів -->
+            <div id="subjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Картки генеруються динамічно через JS -->
+            </div>
+
+            <!-- Якщо пошук нічого не знайшов -->
+            <div id="noResults" class="hidden text-center py-12 ice-card rounded-3xl">
+                <i class="fa-regular fa-snowflake text-4xl text-sky-400 mb-3"></i>
+                <p class="text-slate-600 font-medium">Предметів за вашим запитом не знайдено</p>
+            </div>
+        </main>
+
+        <!-- ВІДЛІК ДО НОВОГО РОКУ (ВНИЗУ СТОРІНКИ) -->
+        <section class="mt-16 reveal-item">
+            <div class="ice-card rounded-3xl p-6 sm:p-8 max-w-3xl mx-auto text-center relative overflow-hidden">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-bold uppercase tracking-wider mb-3 border border-sky-200">
+                    <i class="fa-solid fa-tree text-sky-600"></i> Зимовий лічильник часу
+                </div>
+                <h3 id="newYearCountdownTitle" class="text-xl sm:text-2xl font-extrabold text-slate-800 mb-5">
+                    До Нового року залишилось:
+                </h3>
+
+                <div class="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-lg mx-auto">
+                    <div class="bg-white/90 border border-sky-200 rounded-2xl p-3 sm:p-4 shadow-sm">
+                        <div id="nyDays" class="text-2xl sm:text-3xl font-extrabold font-mono text-sky-600">00</div>
+                        <div class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Днів</div>
+                    </div>
+                    <div class="bg-white/90 border border-sky-200 rounded-2xl p-3 sm:p-4 shadow-sm">
+                        <div id="nyHours" class="text-2xl sm:text-3xl font-extrabold font-mono text-sky-600">00</div>
+                        <div class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Годин</div>
+                    </div>
+                    <div class="bg-white/90 border border-sky-200 rounded-2xl p-3 sm:p-4 shadow-sm">
+                        <div id="nyMinutes" class="text-2xl sm:text-3xl font-extrabold font-mono text-sky-600">00</div>
+                        <div class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Хвилин</div>
+                    </div>
+                    <div class="bg-white/90 border border-sky-200 rounded-2xl p-3 sm:p-4 shadow-sm">
+                        <div id="nySeconds" class="text-2xl sm:text-3xl font-extrabold font-mono text-sky-500">00</div>
+                        <div class="text-[11px] sm:text-xs font-semibold text-slate-500 uppercase mt-1">Секунд</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ФУТЕР + ГЛОБАЛЬНЕ СЕРДЕЧКО-ЛІЧИЛЬНИК У САМОМУ НИЗУ -->
+    <footer class="mt-12 py-9 px-4 border-t border-sky-200/80 bg-white/75 backdrop-blur-md relative z-10">
+        <div class="container mx-auto max-w-4xl text-center">
+            
+            <!-- Інтерактивне сердечко з підключенням до сервера -->
+            <div class="mb-6 flex flex-col items-center">
+                <p class="text-xs font-semibold text-slate-500 mb-2.5">
+                    Подобається зимове оновлення? Натисни на сердечко!
+                </p>
+                <button id="globalHeartBtn" onclick="likeSite()" class="winter-interactive group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white border-2 border-sky-200 hover:border-sky-400 shadow-md">
+                    <span id="heartIconWrap" class="text-2xl text-sky-500 group-hover:text-rose-500 transition-colors flex items-center justify-center">
+                        <i id="heartIcon" class="fa-solid fa-heart"></i>
+                    </span>
+                    <span id="heartCounterValue" class="text-lg font-extrabold font-mono text-slate-800">
+                        ...
+                    </span>
+                </button>
+                <span id="heartSyncStatus" class="text-[11px] text-slate-400 mt-1.5">
+                    Синхронізація із сервером...
+                </span>
+            </div>
+
+            <div class="flex justify-center items-center gap-2 mb-2 text-sky-700 text-sm font-bold">
+                <i class="fa-regular fa-snowflake text-sky-500"></i> 9-А клас • Ходосівський ліцей
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                <i class="fa-solid fa-circle-info text-sky-500 mr-1"></i>
+                Можливо, деякі посилання вже не активні, автор сайту не бере на себе відповідальність.
+            </p>
+            <p class="text-[11px] text-slate-400 mt-3">
+                &copy; <span id="currentYear"></span> 9-А Клас. Усі права захищено.
+            </p>
+        </div>
+    </footer>
+
+    <!-- КНОПКА ПІДТРИМКИ СПРАВА ВНИЗУ -->
+    <button onclick="openSupportModal()" class="winter-btn fixed bottom-5 right-5 z-40 px-4 py-3.5 rounded-2xl shadow-xl flex items-center gap-2.5 font-bold text-sm border border-white/40">
+        <i class="fa-solid fa-headset text-lg"></i>
+        <span class="hidden sm:inline">Підтримка</span>
+    </button>
+
+    <!-- МОДАЛЬНЕ ВІКНО ПІДТРИМКИ -->
+    <div id="supportModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="ice-card bg-white/95 rounded-3xl max-w-md w-full p-6 sm:p-7 relative shadow-2xl border border-sky-200 wish-pop">
+            <button onclick="closeSupportModal()" class="winter-interactive absolute top-4 right-4 w-9 h-9 rounded-xl bg-sky-50 hover:bg-sky-100 text-slate-600 flex items-center justify-center border border-sky-200">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center text-lg shadow-md">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-800">Написати в підтримку</h3>
+                    <p class="text-xs text-slate-500">Повідомлення надійде адміністратору класу</p>
+                </div>
+            </div>
+
+            <form id="supportForm" onsubmit="submitSupportForm(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Твоє ім'я (необов'язково)
+                    </label>
+                    <input type="text" id="supportName" placeholder="Наприклад: Олександр, 9-А" 
+                           class="w-full bg-sky-50/70 border border-sky-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Повідомлення *
+                    </label>
+                    <textarea id="supportMessage" rows="4" required placeholder="Опиши проблему з посиланням, ідею або побажання..." 
+                              class="w-full bg-sky-50/70 border border-sky-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:bg-white transition-all resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="supportSubmitBtn" class="winter-btn w-full py-3.5 px-5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-lg">
+                    <span>Відправити повідомлення</span>
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО ПОВНОГО СПИСКУ ДНІВ НАРОДЖЕННЯ -->
+    <div id="birthdayListModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="ice-card bg-white/95 rounded-3xl max-w-lg w-full p-6 relative shadow-2xl border border-sky-200 max-h-[85vh] flex flex-col wish-pop">
+            <div class="flex items-center justify-between pb-3 border-b border-sky-100">
+                <h3 class="text-lg font-extrabold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-cake-candles text-sky-500"></i> Дні народження 9-А класу
+                </h3>
+                <button onclick="toggleBirthdayListModal()" class="winter-interactive w-9 h-9 rounded-xl bg-sky-50 hover:bg-sky-100 text-slate-600 flex items-center justify-center border border-sky-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="allBirthdaysContainer" class="overflow-y-auto mt-3 pr-1 space-y-2 text-sm">
+                <!-- Список генерується JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast-сповіщення -->
+    <div id="toast" class="fixed bottom-5 left-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-white/95 text-slate-800 px-4 py-3 rounded-2xl shadow-xl border border-sky-300 flex items-center gap-3 pointer-events-none backdrop-blur-md">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-sky-500 text-lg"></i>
+        <span id="toastMsg" class="text-sm font-semibold">Посилання скопійовано!</span>
+    </div>
+
+    <!-- JAVASCRIPT ЛОГІКА -->
+    <script>
+        // Захист від виділення тексту та контекстного меню
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('selectstart', event => {
+            if (event.target.tagName !== 'INPUT' && event.target.tagName !== 'TEXTAREA') {
+                event.preventDefault();
+            }
+        });
+
+        /* =====================================================================
+           1. ДАНІ РОЗКЛАДУ ТА ПРЕДМЕТІВ ZOOM
+           ===================================================================== */
+        const scheduleData = [
+            { num: 1, start: "08:30", end: "09:15", days: ["Геог", "Геог", "Фізра", "Хімія", "Інф, Група 1"] },
+            { num: 2, start: "09:30", end: "10:15", days: ["Англ мова", "Всесвітня історія", "Історія України", "Правознавство", "Біологія"] },
+            { num: 3, start: "10:30", end: "11:15", days: ["Біологія", "Хімія", "Мист", "Англ мова", "Громадянська освіта"] },
+            { num: 4, start: "11:30", end: "12:15", days: ["Заруб літ", "Укр мова", "Геометрія", "Укр літ", "Фізика"] },
+            { num: 5, start: "12:30", end: "13:15", days: ["Фізра", "Укр літ", "Алгебра", "Алгебра", "Англ мова"] },
+            { num: 6, start: "13:30", end: "14:15", days: ["Історія України", "Геометрія", "Фізика", "Інф, Група 1", "Заруб літ"] },
+            { num: 7, start: "14:30", end: "15:15", days: ["ЗБД", "-", "Укр мова", "Підприємництво і фінансова грамотність", "Фізра"] },
+            { num: 8, start: "15:25", end: "16:10", days: ["Укр мова", "-", "Інф, Група 2", "Тех", "-"] },
+            { num: 9, start: "16:20", end: "17:05", days: ["-", "-", "-", "Фізика", "-"] }
+        ];
+
+        const subjects = [
+            { id: 'art', name: 'Мистецтво', icon: 'fa-palette', color: 'from-sky-400 to-blue-500', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'cs', name: 'Інформатика', icon: 'fa-laptop-code', color: 'from-blue-500 to-indigo-500', url: 'https://us04web.zoom.us/j/71985036194?pwd=GZnBIfbGYmzpcZ8a4s7lGfpIxj68zu.1' },
+            { id: 'law', name: 'Правознавство', icon: 'fa-scale-balanced', color: 'from-cyan-500 to-sky-600', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'civic', name: 'Громадянська освіта', icon: 'fa-people-roof', color: 'from-teal-400 to-cyan-600', url: 'https://us04web.zoom.us/j/73674883808?pwd=eu9ea0MgiQJsiYekYhavOyM7ID5Xw2.1' },
+            { id: 'geom', name: 'Геометрія', icon: 'fa-shapes', color: 'from-sky-500 to-indigo-500', url: 'https://us02web.zoom.us/j/77376573336?pwd=AgS6P0hLWvEpSEdK49zVXyAbZpo9aT.1' },
+            { id: 'bio', name: 'Біологія', icon: 'fa-dna', color: 'from-cyan-400 to-teal-600', url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1' },
+            { id: 'geo', name: 'Географія', icon: 'fa-earth-europe', color: 'from-blue-400 to-sky-600', url: 'https://us04web.zoom.us/j/71416947086?pwd=pRicbTZaXIKoUqEOBb8tckGZbbL0yC.1' },
+            { id: 'phys', name: 'Фізика', icon: 'fa-atom', color: 'from-indigo-400 to-blue-600', url: 'https://us02web.zoom.us/j/73230486061?pwd=9jNlGkH5Zywvk9wGoGnxzismPNcGd0.1' },
+            { id: 'alg', name: 'Алгебра', icon: 'fa-calculator', color: 'from-sky-500 to-blue-700', url: 'https://us02web.zoom.us/j/79167002158?pwd=AkG8KdLpisz3AKLLrcmfcPO3tfBTbx.1' },
+            { id: 'ent', name: 'Підприємництво', icon: 'fa-chart-line', color: 'from-cyan-500 to-blue-600', url: 'https://us02web.zoom.us/j/79777048151?pwd=yXOg7Ls2SjkLRER016mjZjCtj0Cm0u.1' },
+            { id: 'chem', name: 'Хімія', icon: 'fa-flask-vial', color: 'from-teal-400 to-sky-600', url: 'https://us05web.zoom.us/j/89476023696?pwd=NIc3h5jlAGYcW1A6DWB8joSbZLnCa9.1' },
+            { id: 'ukr_lang', name: 'Українська мова', icon: 'fa-language', color: 'from-sky-400 to-cyan-600', url: 'https://us05web.zoom.us/j/6440761312?pwd=ejZ1SzMwa1hSeitSSkNLV0hZVklkQT09' },
+            { id: 'ukr_lit', name: 'Українська література', icon: 'fa-book-open', color: 'from-blue-400 to-indigo-500', url: 'https://us04web.zoom.us/j/75376162218?pwd=BswBCnHaav6oWhxzr8BpdJ3TDh1DZA.1' },
+            { id: 'foreign_lit', name: 'Зарубіжна література', icon: 'fa-book-bookmark', color: 'from-sky-500 to-cyan-600', url: 'https://us02web.zoom.us/j/71439288040?pwd=lW1tiike5mffRaKU4i69NeLJNBabyp.1' },
+            { id: 'eng', name: 'Англійська мова', icon: 'fa-globe', color: 'from-blue-500 to-sky-500', url: 'https://us04web.zoom.us/j/4894187705?pwd=ZTZ6d25IRnY0MEFndjRIcGhvYWttZz09' },
+            { id: 'hist', name: 'Історія України / Всесвітня', icon: 'fa-monument', color: 'from-cyan-600 to-blue-700', url: 'https://us05web.zoom.us/j/9476411133?pwd=WDdiK1JvT3YrQmdJTzJmYUk3aUM5dz09' }
+        ];
+
+        /* =====================================================================
+           2. БАЗА ДНІВ НАРОДЖЕННЯ УЧНІВ ТА КЛАСНОГО КЕРІВНИКА
+           ===================================================================== */
+        const birthdays = [
+            // Осінь
+            { day: 5, month: 9, name: "Нагорний Владислав", season: "Осінь" },
+            { day: 13, month: 9, name: "Голішенко Уляна", season: "Осінь" },
+            { day: 29, month: 9, name: "Коваленко Іван", season: "Осінь" },
+            // Зима
+            { day: 13, month: 12, name: "Керничанська Анастасія", season: "Зима" },
+            { day: 3, month: 1, name: "Сиволапенко Тимофій", season: "Зима" },
+            { day: 13, month: 1, name: "Голота Кіріл", season: "Зима" },
+            // Весна
+            { day: 23, month: 3, name: "Рябічев Давід", season: "Весна" },
+            { day: 2, month: 4, name: "Коробко Артем", season: "Весна" },
+            { day: 10, month: 4, name: "Корнієнко Дар’я", season: "Весна" },
+            { day: 14, month: 4, name: "Янда Віталій", season: "Весна" },
+            { day: 19, month: 4, name: "Матушевич Катерина", season: "Весна" },
+            { day: 28, month: 4, name: "Лінник Артур", season: "Весна" },
+            { day: 7, month: 5, name: "Соловйова Вікторія", season: "Весна" },
+            // Літо
+            { day: 22, month: 6, name: "Бучко Софія", season: "Літо" },
+            { day: 23, month: 6, name: "Хотіна Анастасія", season: "Літо" },
+            { day: 8, month: 7, name: "Ольховський Іван", season: "Літо" },
+            { day: 16, month: 7, name: "Піддубна Людмила Олександрівна", role: "Класний керівник", season: "Літо" },
+            { day: 5, month: 8, name: "Моторний Ілля", season: "Літо" }
+        ];
+
+        function checkBirthdays() {
+            const now = new Date();
+            const d = now.getDate();
+            const m = now.getMonth() + 1;
+
+            const todayCelebrants = birthdays.filter(b => b.day === d && b.month === m);
+            const titleEl = document.getElementById('birthdayTitle');
+            const subEl = document.getElementById('birthdaySubtitle');
+            const iconBox = document.getElementById('birthdayIconBox');
+
+            if (todayCelebrants.length > 0) {
+                const names = todayCelebrants.map(c => c.role ? `${c.name} (${c.role})` : c.name).join(', ');
+                titleEl.innerHTML = `🎉 З Днем народження, <span class="text-sky-600">${names}</span>!`;
+                subEl.textContent = "Весь 9-А клас щиро вітає! Бажаємо яскравих емоцій, здійснення мрій, міцного здоров'я та успіхів у всьому! 🥳🎂✨";
+                iconBox.textContent = "🥳";
+                // Автоматично запускаємо святкові хлопавки та конфеті
+                setTimeout(() => launchConfetti(160), 600);
+                setTimeout(() => launchConfetti(120), 2200);
+            } else {
+                titleEl.textContent = "Чекаємо на дні народження 🎂";
+                subEl.textContent = "Сьогодні іменинників немає, але ми завжди готові до свята та теплих привітань!";
+                iconBox.textContent = "🎂";
+            }
+
+            renderAllBirthdaysModal(d, m);
+        }
+
+        function renderAllBirthdaysModal(curDay, curMonth) {
+            const container = document.getElementById('allBirthdaysContainer');
+            container.innerHTML = '';
+            const seasons = ["Осінь", "Зима", "Весна", "Літо"];
+
+            seasons.forEach(season => {
+                const list = birthdays.filter(b => b.season === season);
+                if (!list.length) return;
+
+                const header = document.createElement('div');
+                header.className = "text-xs font-extrabold uppercase tracking-wider text-sky-600 pt-2 pb-1";
+                header.textContent = season;
+                container.appendChild(header);
+
+                list.forEach(person => {
+                    const isToday = person.day === curDay && person.month === curMonth;
+                    const dateStr = `${String(person.day).padStart(2, '0')}.${String(person.month).padStart(2, '0')}`;
+                    const row = document.createElement('div');
+                    row.className = `flex items-center justify-between px-3.5 py-2.5 rounded-xl border ${isToday ? 'bg-sky-100 border-sky-400 font-bold' : 'bg-sky-50/60 border-sky-100'}`;
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2.5">
+                            <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-white text-sky-700 border border-sky-200">${dateStr}</span>
+                            <span class="text-slate-800">${person.name}</span>
+                            ${person.role ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-200 text-sky-800">Класний керівник</span>' : ''}
+                        </div>
+                        <span>${isToday ? '🥳 Сьогодні!' : '🎈'}</span>
+                    `;
+                    container.appendChild(row);
+                });
+            });
+        }
+
+        function toggleBirthdayListModal() {
+            const modal = document.getElementById('birthdayListModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function triggerBirthdayCelebration() {
+            launchConfetti(180);
+            showToast("Святковий салют запущено! 🎉");
+        }
+
+        /* =====================================================================
+           3. ВІКНО ПРИВІТАНЬ ЗІ СВЯТАМИ (МИКОЛАЙ, РІЗДВО, НОВИЙ РІК, ПАСХА, ЛІТО)
+           ===================================================================== */
+        function getOrthodoxEaster(year) {
+            // Алгоритм обчислення православної Пасхи за григоріанським календарем
+            const a = year % 4;
+            const b = year % 7;
+            const c = year % 19;
+            const d = (19 * c + 15) % 30;
+            const e = (2 * a + 4 * b - d + 34) % 7;
+            const month = Math.floor((d + e + 114) / 31); // 3 = березень, 4 = квітень (за юліанським)
+            const day = ((d + e + 114) % 31) + 1;
+            const julianDate = new Date(year, month - 1, day);
+            julianDate.setDate(julianDate.getDate() + 13); // Перехід на григоріанський
+            return { day: julianDate.getDate(), month: julianDate.getMonth() + 1 };
+        }
+
+        function updateHolidayBanner() {
+            const now = new Date();
+            const d = now.getDate();
+            const m = now.getMonth() + 1;
+            const y = now.getFullYear();
+
+            document.getElementById('todayDateBadge').textContent =
+                `${String(d).padStart(2, '0')}.${String(m).padStart(2, '0')}.${y}`;
+
+            const easter = getOrthodoxEaster(y);
+            let holiday = {
+                icon: "❄️",
+                title: "Зимова атмосфера 9-А класу!",
+                message: "Нехай кожен день приносить світлі ідеї, легкі контрольні та чудовий настрій! ⛄✨"
+            };
+
+            // 1. Святий Миколай (6 грудня та 19 грудня)
+            if ((m === 12 && d === 6) || (m === 12 && d === 19)) {
+                holiday = {
+                    icon: "🎅",
+                    title: "З Днем Святого Миколая! ✨",
+                    message: "Нехай Святий Миколай принесе під подушку гарний настрій, здійснення бажань і лише високі оцінки! 🎁❄️"
+                };
+            }
+            // 2. Різдво Христове (24-25 грудня та 7 січня)
+            else if ((m === 12 && (d === 24 || d === 25)) || (m === 1 && d === 7)) {
+                holiday = {
+                    icon: "🌟",
+                    title: "З Різдвом Христовим! ✨",
+                    message: "Нехай різдвяна зірка освітлює шлях до знань, а в кожній родині панують мир, тепло і радість! 🕯️❄️"
+                };
+            }
+            // 3. 31 грудня — наступає Новий рік
+            else if (m === 12 && d === 31) {
+                holiday = {
+                    icon: "🎄",
+                    title: "Наступає Новий рік! 🥂✨",
+                    message: "З прийдешнім Новим роком, 9-А! Залишаємо всі труднощі у старому році та готуємось до нових перемог! 🎆"
+                };
+            }
+            // 4. 1-2 січня — Усіх з Новим роком
+            else if (m === 1 && (d === 1 || d === 2)) {
+                holiday = {
+                    icon: "🎆",
+                    title: "Усіх з Новим роком! 🎄❄️",
+                    message: "Вітаємо весь 9-А клас із Новим роком! Нехай цей рік буде яскравим, щасливим та сповненим крутих моментів! 🥳"
+                };
+                setTimeout(() => launchConfetti(110), 1000);
+            }
+            // 5. Пасха (Великдень)
+            else if (m === easter.month && d === easter.day) {
+                holiday = {
+                    icon: "🐣",
+                    title: "Христос Воскрес! Зі святом Пасхи! 🌿",
+                    message: "Світлого Великодня, смачної паски, весняного тепла, миру та радості кожному! 🥚✨"
+                };
+            }
+            // 6. Кінець травня / Літо (особливо around 30 травня — скоро канікули!)
+            else if ((m === 5 && d >= 25) || (m >= 6 && m <= 8)) {
+                holiday = {
+                    icon: "☀️",
+                    title: m === 5 ? "Скоро канікули! ☀️🏖️😎🎉" : "Ура, літні канікули! 🌴🍉🌊",
+                    message: m === 5
+                        ? "Залишилось зовсім трішки! Готуємось до відпочинку, сонця та крутих пригод! 😎🍦✨"
+                        : "Насолоджуйтесь сонячними днями, відпочивайте та заряджайтесь енергією! 🏖️☀️🎉"
+                };
+            }
+
+            document.getElementById('holidayIconBox').textContent = holiday.icon;
+            document.getElementById('holidayTitle').textContent = holiday.title;
+            document.getElementById('holidayMessage').textContent = holiday.message;
+        }
+
+        /* =====================================================================
+           4. ЩОДЕННИЙ ІНТЕРАКТИВНИЙ ПОДАРУНОК З ВИБУХОМ І ПОБАЖАННЯМ
+           ===================================================================== */
+        const dailyWishes = [
+            "Гарного дня! Нехай сьогодні все вдається легко! ✨",
+            "Не забувай про д/з, але й про відпочинок теж! 📚❄️",
+            "Сьогодні твій день — лови удачу та 12 балів! 🚀",
+            "Посміхнись! Твоя усмішка робить цей день теплішим! 😊☀️",
+            "Вір у себе — у тебе точно все вийде на відмінно! 💫",
+            "Нехай на уроках буде цікаво, а на перервах весело! 🎉",
+            "Бажаємо океан натхнення та крутих ідей сьогодні! 🌊✨",
+            "Ти супер! Продовжуй впевнено рухатись до своїх мрій! 🏆",
+            "Нехай сьогодні прилетить приємна новина або сюрприз! 🎁",
+            "Зимового дива, гарного настрою та теплих зустрічей! ⛄💙"
+        ];
+
+        function openDailyGift() {
+            const btn = document.getElementById('dailyGiftBtn');
+            const rect = btn.getBoundingClientRect();
+            const originX = (rect.left + rect.width / 2) / window.innerWidth;
+            const originY = (rect.top + rect.height / 2) / window.innerHeight;
+
+            btn.classList.remove('gift-wiggle');
+            btn.classList.add('gift-exploding');
+
+            // Вибух частинок прямо з подарунка
+            launchConfetti(95, originX, originY);
+
+            setTimeout(() => {
+                document.getElementById('dailyGiftArea').classList.add('hidden');
+                const wishBox = document.getElementById('dailyWishBox');
+                wishBox.classList.remove('hidden');
+
+                // Вибираємо побажання на основі дня року
+                const now = new Date();
+                const dayIndex = (now.getDate() + now.getMonth() * 31) % dailyWishes.length;
+                document.getElementById('dailyWishText').textContent = dailyWishes[dayIndex];
+            }, 450);
+        }
+
+        function openAnotherWish() {
+            const wishText = document.getElementById('dailyWishText');
+            const wishBox = document.getElementById('dailyWishBox');
+            const randomWish = dailyWishes[Math.floor(Math.random() * dailyWishes.length)];
+            wishText.textContent = randomWish;
+
+            wishBox.classList.remove('wish-pop');
+            void wishBox.offsetWidth; // перезапуск анімації
+            wishBox.classList.add('wish-pop');
+            launchConfetti(45);
+        }
+
+        /* =====================================================================
+           5. ЗВОРОТНИЙ ВІДЛІК ДО НОВОГО РОКУ
+           ===================================================================== */
+        function updateNewYearCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            // Якщо зараз 1-2 січня, святкуємо поточний рік, інакше рахуємо до 1 січня наступного року
+            const isNewYearDays = now.getMonth() === 0 && (now.getDate() === 1 || now.getDate() === 2);
+            const targetYear = isNewYearDays ? currentYear : currentYear + 1;
+            const targetDate = new Date(targetYear, 0, 1, 0, 0, 0);
+
+            const titleEl = document.getElementById('newYearCountdownTitle');
+            if (isNewYearDays) {
+                titleEl.textContent = `🎉 З Новим ${currentYear} роком!`;
+                document.getElementById('nyDays').textContent = "00";
+                document.getElementById('nyHours').textContent = "00";
+                document.getElementById('nyMinutes').textContent = "00";
+                document.getElementById('nySeconds').textContent = "00";
+                return;
+            }
+
+            titleEl.textContent = `До Нового ${targetYear} року залишилось:`;
+            const diff = targetDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                document.getElementById('nyDays').textContent = String(days).padStart(2, '0');
+                document.getElementById('nyHours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('nyMinutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('nySeconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        /* =====================================================================
+           6. СЕРВЕРНИЙ ЛІЧИЛЬНИК-СЕРДЕЧКО В САМОМУ НИЗУ
+           ===================================================================== */
+        const COUNTER_NAMESPACE = "khodosivka-9a-winter";
+        const COUNTER_KEY = "hearts-total";
+        let currentHeartCount = 0;
+
+        async function initServerHearts() {
+            const countEl = document.getElementById('heartCounterValue');
+            const statusEl = document.getElementById('heartSyncStatus');
+            const localSaved = parseInt(localStorage.getItem('khodosivka_hearts_cache') || '42', 10);
+
+            try {
+                const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/`);
+                if (res.ok) {
+                    const data = await res.json();
+                    currentHeartCount = data.count || localSaved;
+                    localStorage.setItem('khodosivka_hearts_cache', currentHeartCount);
+                    countEl.textContent = currentHeartCount;
+                    statusEl.textContent = "Підключено до сервера • Натискай скільки завгодно!";
+                    return;
+                }
+            } catch (err) {
+                // Якщо мережа або CORS тимчасово недоступні, використовуємо збережене значення
+            }
+
+            currentHeartCount = localSaved;
+            countEl.textContent = currentHeartCount;
+            statusEl.textContent = "Збережено • Натискай на сердечко!";
+        }
+
+        async function likeSite() {
+            const countEl = document.getElementById('heartCounterValue');
+            const heartIcon = document.getElementById('heartIcon');
+            const btn = document.getElementById('globalHeartBtn');
+
+            // Анімація сердечка
+            heartIcon.classList.remove('heart-pop');
+            void heartIcon.offsetWidth;
+            heartIcon.classList.add('heart-pop');
+            heartIcon.classList.add('text-rose-500');
+
+            // Оптимістичне оновлення лічильника
+            currentHeartCount += 1;
+            countEl.textContent = currentHeartCount;
+            localStorage.setItem('khodosivka_hearts_cache', currentHeartCount);
+
+            // Міні-іскри від сердечка
+            const rect = btn.getBoundingClientRect();
+            launchConfetti(18, (rect.left + rect.width / 2) / window.innerWidth, rect.top / window.innerHeight);
+
+            try {
+                const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}/up`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (typeof data.count === 'number') {
+                        currentHeartCount = data.count;
+                        countEl.textContent = currentHeartCount;
+                        localStorage.setItem('khodosivka_hearts_cache', currentHeartCount);
+                    }
+                }
+            } catch (err) {
+                // Залишаємо локально оновлене число
+            }
+        }
+
+        /* =====================================================================
+           7. ВІДЖЕТ ПІДТРИМКИ (ВІДПРАВКА НА vitalijanda6@gmail.com)
+           ===================================================================== */
+        function openSupportModal() {
+            const modal = document.getElementById('supportModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeSupportModal() {
+            const modal = document.getElementById('supportModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function submitSupportForm(e) {
+            e.preventDefault();
+            const nameVal = document.getElementById('supportName').value.trim() || "Учень 9-А класу";
+            const msgVal = document.getElementById('supportMessage').value.trim();
+            const submitBtn = document.getElementById('supportSubmitBtn');
+
+            if (!msgVal) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Відправка...</span>`;
+
+            try {
+                const response = await fetch("https://formsubmit.co/ajax/vitalijanda6@gmail.com", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({
+                        _subject: "Нове повідомлення з сайту Ходосівський ліцей 9-А",
+                        Відправник: nameVal,
+                        Повідомлення: msgVal
+                    })
+                });
+
+                if (response.ok) {
+                    showToast("Повідомлення успішно відправлено на пошту! ✉️");
+                    document.getElementById('supportForm').reset();
+                    closeSupportModal();
+                } else {
+                    throw new Error("FormSubmit fallback");
+                }
+            } catch (error) {
+                // Фолбек через поштовий клієнт користувача, якщо сервіс заблокований
+                const subject = encodeURIComponent("Підтримка сайту 9-А класу");
+                const body = encodeURIComponent(`Від: ${nameVal}\n\nПовідомлення:\n${msgVal}`);
+                window.location.href = `mailto:vitalijanda6@gmail.com?subject=${subject}&body=${body}`;
+                showToast("Відкриваємо пошту для відправки листа...");
+                closeSupportModal();
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span>Відправити повідомлення</span> <i class="fa-solid fa-paper-plane text-xs"></i>`;
+            }
+        }
+
+        /* =====================================================================
+           8. РЕНДЕР РОЗКЛАДУ, ТАЙМЕР УРОКІВ ТА КАРТКИ ZOOM
+           ===================================================================== */
+        function renderSchedule() {
+            const tbody = document.getElementById('scheduleTableBody');
+            tbody.innerHTML = '';
+
+            scheduleData.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-sky-50/70 transition-colors';
+
+                let dayCellsHTML = '';
+                item.days.forEach((subj, dayIndex) => {
+                    const isCanceled = subj === 'Фізра' || subj === 'Тех';
+                    const canceledClass = isCanceled ? 'canceled-subject' : '';
+                    const emptyClass = subj === '-' ? 'text-slate-400' : 'text-slate-700';
+
+                    dayCellsHTML += `
+                        <td class="p-3 day-col-${dayIndex + 1}" data-day="${dayIndex + 1}" data-lesson="${item.num}">
+                            <div class="px-3 py-1.5 rounded-xl border border-sky-100 bg-white/80 ${canceledClass} ${emptyClass} text-xs font-semibold inline-block w-full text-center sm:text-left shadow-2xs">
+                                ${subj}
+                            </div>
+                        </td>
+                    `;
+                });
+
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-center text-sky-600">${item.num}</td>
+                    <td class="p-3 text-xs text-slate-500 whitespace-nowrap font-mono font-medium">${item.start} - ${item.end}</td>
+                    ${dayCellsHTML}
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateLiveStatus() {
+            const now = new Date();
+            const currentDay = now.getDay();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentSeconds = now.getSeconds();
+
+            const statusTitle = document.getElementById('statusTitle');
+            const timerCountdown = document.getElementById('timerCountdown');
+
+            document.querySelectorAll('.active-lesson-cell').forEach(el => el.classList.remove('active-lesson-cell'));
+
+            if (currentDay === 0 || currentDay === 6) {
+                statusTitle.innerHTML = `<span class="text-sky-600">Сьогодні вихідний!</span> ⛄`;
+                timerCountdown.textContent = "00:00";
+                highlightActiveTab(currentDay === 6 ? 5 : 1);
+                return;
+            }
+
+            highlightActiveTab(currentDay);
+
+            let activeLesson = null;
+            let nextLesson = null;
+
+            for (let i = 0; i < scheduleData.length; i++) {
+                const lesson = scheduleData[i];
+                const [startH, startM] = lesson.start.split(':').map(Number);
+                const [endH, endM] = lesson.end.split(':').map(Number);
+
+                const startTotal = startH * 60 + startM;
+                const endTotal = endH * 60 + endM;
+
+                if (currentMinutes >= startTotal && currentMinutes <= endTotal) {
+                    activeLesson = { ...lesson, startTotal, endTotal };
+                    break;
+                } else if (currentMinutes < startTotal) {
+                    nextLesson = { ...lesson, startTotal, endTotal };
+                    break;
+                }
+            }
+
+            if (activeLesson) {
+                const subjectName = activeLesson.days[currentDay - 1];
+                statusTitle.innerHTML = `Урок ${activeLesson.num}: <span class="text-sky-600 font-extrabold">${subjectName}</span>`;
+
+                const activeCell = document.querySelector(`[data-day="${currentDay}"][data-lesson="${activeLesson.num}"] div`);
+                if (activeCell) activeCell.classList.add('active-lesson-cell');
+
+                const secondsLeft = (activeLesson.endTotal * 60) - (currentMinutes * 60 + currentSeconds);
+                timerCountdown.textContent = formatTime(secondsLeft);
+            } else if (nextLesson) {
+                statusTitle.innerHTML = `Зараз <span class="text-sky-600">перерва</span> (наст: ${nextLesson.days[currentDay - 1]})`;
+                const secondsLeft = (nextLesson.startTotal * 60) - (currentMinutes * 60 + currentSeconds);
+                timerCountdown.textContent = formatTime(secondsLeft);
+            } else {
+                const dayStartMins = 8 * 60 + 30;
+                if (currentMinutes < dayStartMins) {
+                    statusTitle.innerHTML = `<span class="text-sky-600">Уроки ще не почалися</span> ❄️`;
+                    const secondsLeft = (dayStartMins * 60) - (currentMinutes * 60 + currentSeconds);
+                    timerCountdown.textContent = formatTime(secondsLeft);
+                } else {
+                    statusTitle.innerHTML = `<span class="text-sky-700">Навчальний день завершено!</span> ✨`;
+                    timerCountdown.textContent = "00:00";
+                }
+            }
+        }
+
+        function formatTime(totalSeconds) {
+            if (totalSeconds < 0) return "00:00";
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function switchDayTab(dayNum) {
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                if (parseInt(btn.getAttribute('data-day')) === dayNum) {
+                    btn.classList.add('bg-sky-500', 'text-white', 'border-sky-500', 'shadow-sm');
+                    btn.classList.remove('bg-white/80', 'text-slate-600', 'border-sky-200');
+                } else {
+                    btn.classList.remove('bg-sky-500', 'text-white', 'border-sky-500', 'shadow-sm');
+                    btn.classList.add('bg-white/80', 'text-slate-600', 'border-sky-200');
+                }
+            });
+
+            for (let i = 1; i <= 5; i++) {
+                const cols = document.querySelectorAll(`.day-col-${i}`);
+                cols.forEach(col => {
+                    if (window.innerWidth < 640) {
+                        col.style.display = (i === dayNum) ? '' : 'none';
+                    } else {
+                        col.style.display = '';
+                    }
+                });
+            }
+        }
+
+        function highlightActiveTab(dayNum) {
+            const validDay = dayNum >= 1 && dayNum <= 5 ? dayNum : 1;
+            switchDayTab(validDay);
+        }
+
+        function renderSubjects(items) {
+            const grid = document.getElementById('subjectsGrid');
+            const noResults = document.getElementById('noResults');
+            const subjectCount = document.getElementById('subjectCount');
+
+            grid.innerHTML = '';
+            subjectCount.textContent = `Всього: ${items.length}`;
+
+            if (items.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            items.forEach((subject) => {
+                const card = document.createElement('div');
+                card.className = 'ice-card rounded-3xl p-5 flex flex-col justify-between relative group reveal-item';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${subject.color} flex items-center justify-center text-white text-xl shadow-md shadow-sky-300/40 group-hover:scale-110 transition-transform duration-300">
+                                <i class="fa-solid ${subject.icon}"></i>
+                            </div>
+                            <button onclick="copyLink('${subject.url}')" title="Скопіювати посилання" class="winter-interactive text-slate-400 hover:text-sky-600 p-2.5 rounded-xl bg-sky-50/70 hover:bg-sky-100 border border-sky-100">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+
+                        <h4 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-sky-600 transition-colors">
+                            ${subject.name}
+                        </h4>
+
+                        <p class="text-xs text-slate-500 mb-6 flex items-center gap-1.5 font-medium">
+                            <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                            Zoom Конференція
+                        </p>
+                    </div>
+
+                    <a href="${subject.url}" target="_blank" rel="noopener noreferrer" 
+                       class="winter-btn w-full py-3 px-4 rounded-2xl text-center font-bold text-white text-sm shadow-md flex items-center justify-center gap-2">
+                        <span>Приєднатися</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+                    </a>
+                `;
+                grid.appendChild(card);
+            });
+
+            initScrollObserver();
+        }
+
+        document.getElementById('subjectSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = subjects.filter(s => s.name.toLowerCase().includes(query));
+            renderSubjects(filtered);
+        });
+
+        function copyLink(url) {
+            const tempInput = document.createElement('input');
+            tempInput.value = url;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('Посилання скопійовано!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.08 });
+
+            document.querySelectorAll('.reveal-item').forEach((el) => observer.observe(el));
+        }
+
+        /* =====================================================================
+           9. CANVAS АНІМАЦІЇ: ПАДАЮЧИЙ СНІГ + КОНФЕТІ/ХЛОПАВКИ
+           ===================================================================== */
+        const snowCanvas = document.getElementById('snowCanvas');
+        const snowCtx = snowCanvas.getContext('2d');
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+
+        let snowflakes = [];
+        let confettiParticles = [];
+
+        function resizeCanvases() {
+            snowCanvas.width = window.innerWidth;
+            snowCanvas.height = window.innerHeight;
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function initSnow() {
+            snowflakes = [];
+            const count = Math.min(90, Math.floor(window.innerWidth / 15));
+            for (let i = 0; i < count; i++) {
+                snowflakes.push({
+                    x: Math.random() * snowCanvas.width,
+                    y: Math.random() * snowCanvas.height,
+                    r: Math.random() * 3.2 + 1.2,
+                    speedY: Math.random() * 1.1 + 0.4,
+                    drift: Math.random() * 0.6 - 0.3,
+                    opacity: Math.random() * 0.55 + 0.35
+                });
+            }
+        }
+
+        function launchConfetti(amount = 120, originX = null, originY = null) {
+            const colors = ['#38bdf8', '#0284c7', '#7dd3fc', '#ffffff', '#f472b6', '#fbbf24', '#34d399'];
+            const startX = originX !== null ? originX * confettiCanvas.width : confettiCanvas.width * (0.25 + Math.random() * 0.5);
+            const startY = originY !== null ? originY * confettiCanvas.height : confettiCanvas.height * 0.35;
+
+            for (let i = 0; i < amount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 10 + 4;
+                confettiParticles.push({
+                    x: startX,
+                    y: startY,
+                    vx: Math.cos(angle) * velocity,
+                    vy: Math.sin(angle) * velocity - 3,
+                    size: Math.random() * 7 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 12,
+                    life: 1
+                });
+            }
+        }
+
+        function animateCanvases() {
+            // Сніг
+            snowCtx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+            snowflakes.forEach(f => {
+                f.y += f.speedY;
+                f.x += f.drift + Math.sin(f.y * 0.015) * 0.35;
+
+                if (f.y > snowCanvas.height) {
+                    f.y = -5;
+                    f.x = Math.random() * snowCanvas.width;
+                }
+                if (f.x > snowCanvas.width) f.x = 0;
+                if (f.x < 0) f.x = snowCanvas.width;
+
+                snowCtx.beginPath();
+                snowCtx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                snowCtx.fillStyle = `rgba(255, 255, 255, ${f.opacity})`;
+                snowCtx.shadowBlur = 6;
+                snowCtx.shadowColor = 'rgba(56, 189, 248, 0.55)';
+                snowCtx.fill();
+            });
+
+            // Конфеті та хлопавки
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            for (let i = confettiParticles.length - 1; i >= 0; i--) {
+                const p = confettiParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.22; // гравітація
+                p.vx *= 0.985;
+                p.rotation += p.rotSpeed;
+                p.life -= 0.0085;
+
+                if (p.life <= 0 || p.y > confettiCanvas.height + 20) {
+                    confettiParticles.splice(i, 1);
+                    continue;
+                }
+
+                confettiCtx.save();
+                confettiCtx.translate(p.x, p.y);
+                confettiCtx.rotate((p.rotation * Math.PI) / 180);
+                confettiCtx.globalAlpha = Math.max(0, p.life);
+                confettiCtx.fillStyle = p.color;
+                confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                confettiCtx.restore();
+            }
+
+            requestAnimationFrame(animateCanvases);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+            const activeDay = new Date().getDay();
+            switchDayTab(activeDay >= 1 && activeDay <= 5 ? activeDay : 1);
+        });
+
+        // Ініціалізація при завантаженні сторінки
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvases();
+            initSnow();
+            animateCanvases();
+
+            renderSchedule();
+            renderSubjects(subjects);
+            updateHolidayBanner();
+            checkBirthdays();
+            initServerHearts();
+
+            updateLiveStatus();
+            updateNewYearCountdown();
+            setInterval(() => {
+                updateLiveStatus();
+                updateNewYearCountdown();
+            }, 1000);
+
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
